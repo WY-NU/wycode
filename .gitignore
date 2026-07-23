@@ -1,0 +1,15 @@
+config.yaml
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.pytest-tmp/
+.pytest-local-tmp/
+*.egg-info/
+dist/
+build/
+.idea/
+.vscode/
+.wycode/
+.claude/
+CLAUDE.md
