@@ -92,13 +92,16 @@ from wycode.teammate_tree import TeammateTree
 
 import re
 
-MAX_TRUNCATED_LINES = 20
-MAX_AT_REF_BYTES = 10240
+MAX_TRUNCATED_LINES = 20 #每行最多20行
+MAX_AT_REF_BYTES = 10240 #每行最多10KB
 
-_AT_REF_RE = re.compile(r"@([\w./_\-]+(?:\.[\w]+)*)")
+_AT_REF_RE = re.compile(r"@([\w./_\-]+(?:\.[\w]+)*)") #@开头的引用
 
-_SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__", ".wycode", "build", ".gradle"}
+_SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__", ".wycode", "build", ".gradle"}#忽略的目录
 
+"""
+扫描文件以查找@引用
+"""
 
 def scan_files_for_at(prefix: str, work_dir: str, limit: int = 10) -> list[str]:
     matches: list[str] = []
@@ -121,7 +124,9 @@ def scan_files_for_at(prefix: str, work_dir: str, limit: int = 10) -> list[str]:
         pass
     return matches
 
-
+"""
+将@引用展开为文件内容
+"""
 def expand_at_refs(text: str, work_dir: str) -> str:
     def _replace(m: re.Match) -> str:
         rel_path = m.group(1)
@@ -135,7 +140,9 @@ def expand_at_refs(text: str, work_dir: str) -> str:
             return m.group(0)
     return _AT_REF_RE.sub(_replace, text)
 
-
+"""
+输入框
+"""
 class ChatInput(TextArea):
     BINDINGS = [
         Binding("enter", "submit", "Submit", priority=True),
@@ -299,7 +306,7 @@ class ChatInput(TextArea):
             self.post_message(self.AtFileRequest(after))
 
 
-COLLAPSIBLE_TOOLS = {"ReadFile", "Glob", "Grep", "ToolSearch"}
+COLLAPSIBLE_TOOLS = {"ReadFile", "Glob", "Grep", "ToolSearch"} # 可折叠的工具列表
 
 
 def _is_subagent_tool(tool_name: str) -> bool:
@@ -369,7 +376,9 @@ def _format_detail(tool_name: str, arguments: dict[str, Any], output: str) -> st
 
     return "\n".join(parts)
 
-
+"""
+工具调用块
+"""
 class ToolCallBlock(Static, can_focus=True):
 
     def __init__(self, tool_name: str, arguments: dict[str, Any], **kwargs: Any) -> None:
